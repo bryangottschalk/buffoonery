@@ -71,9 +71,13 @@ io.on('connection', socket => {
     io.emit(
       'message',
       `player ${state.playerIds.indexOf(socket.id) + 1}: ${text}`
-    ); // send chat message to everyone that is connected, included client itself
-    // if we did socket.emit it would send the message to a particular client
+    ); // send chat message to everyone that is connected, including client itself
+    // if this were socket.emit it would send the message to a particular client
   });
+  if (state.playerCount > 1) {
+    console.log('p2 joined');
+    io.emit('p2joined', state.playerIds[0]);
+  }
 
   socket.on('dir', (dir, isFirstPlayer) => {
     if (isFirstPlayer) {
@@ -84,9 +88,11 @@ io.on('connection', socket => {
   });
   socket.on('p1scored', () => {
     state.score.player1++;
+    io.emit('p1scored');
   });
   socket.on('p2scored', () => {
     state.score.player2++;
+    io.emit('p2scored');
   });
 
   socket.on('gameOver', winningPlayerMessage => {

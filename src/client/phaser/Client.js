@@ -14,7 +14,6 @@ const config = {
       debug: false,
     },
   },
-  // scene: [GameScene],
 };
 
 class Client extends Phaser.Game {
@@ -23,8 +22,11 @@ class Client extends Phaser.Game {
     this.scene.add('Game', GameScene);
     this.scene.add('Boot', BootScene);
     this.scene.add('Preloader', PreloaderScene);
-    // game loads our boot scene, that loads preloader, that loads game
     this.scene.start('Boot');
+
+    // 1) starts boot scene
+    // 2) boot scene starts preloader
+    // 3) preloader starts game
   }
 }
 

@@ -5,7 +5,7 @@ export default class BootScene extends Phaser.Scene {
     super('Boot');
   }
   preload() {
-    // this.load.image('forest', 'assets/images/forest-background.png');
+    // not current using this but can add a loading spinner later
   }
   create() {
     this.scene.start('Preloader');
