@@ -42,6 +42,7 @@ class GameScene extends Phaser.Scene {
       this.state = state;
     });
     this.socket.on('p2joined', () => {
+      // scoring starts when p2 joins
       if (this.isFirstPlayer) {
         this.waitingForSecondPlayer.setVisible(false);
       }
@@ -52,10 +53,29 @@ class GameScene extends Phaser.Scene {
     this.socket.on('p2scored', () => {
       this.score2.setText(`p2 score: ${this.state.score.player2}`);
     });
+    this.chatSubmitted = this.chatSubmitted.bind(this);
+    this.socket.on('message', text => {
+      // listens for message from server
+      const parent = document.getElementById('events');
+      const el = document.createElement('li');
+      el.innerHTML = text;
+      parent.appendChild(el);
+    });
+    console.log(document);
   }
 
   preload() {
     this.disableVisibilityChange = true; // does not require focus for game to run
+    document
+      .querySelector('#chat-form')
+      .addEventListener('submit', this.chatSubmitted);
+  }
+  chatSubmitted(e) {
+    e.preventDefault();
+    const input = document.querySelector('#chat');
+    const text = input.value;
+    input.value = '';
+    this.socket.emit('message', text); // send message to server with payload of string text
   }
 
   // eslint-disable-next-line max-statements

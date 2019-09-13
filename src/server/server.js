@@ -30,14 +30,6 @@ const state = {
   },
 };
 
-// ORIGINAL CONNECTION MESSAGE FROM TEMPLATE
-// io.on('connection', function(socket) {
-//   console.log('a user connected');
-//   socket.on('disconnect', function() {
-//     console.log('user disconnected');
-//   });
-// });
-
 io.on('connection', socket => {
   console.log('Someone connected', socket.id);
 
@@ -68,6 +60,7 @@ io.on('connection', socket => {
   ); // emits to one person
   socket.on('message', text => {
     // handle messages from single client
+    console.log('message:', text);
     io.emit(
       'message',
       `player ${state.playerIds.indexOf(socket.id) + 1}: ${text}`
@@ -75,7 +68,6 @@ io.on('connection', socket => {
     // if this were socket.emit it would send the message to a particular client
   });
   if (state.playerCount > 1) {
-    console.log('p2 joined');
     io.emit('p2joined', state.playerIds[0]);
   }
 
@@ -126,7 +118,6 @@ server.on('error', err => {
   console.error('Server error:', err);
 });
 
-app.set('port', 8080);
-server.listen(app.get('port'), function() {
-  console.log(`Listening on ${server.address().port}`);
+server.listen(process.env.PORT || 8080, function() {
+  console.log('Listening on ' + server.address().port);
 });

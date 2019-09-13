@@ -1,5 +1,4 @@
 function createBumpers() {
-  console.log('this in create bumpers', this);
   this.speed = 100;
   this.bumper1 = this.physics.add.sprite(
     this.game.config.width / 2,
