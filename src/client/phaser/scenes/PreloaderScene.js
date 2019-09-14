@@ -31,6 +31,7 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.image('forest', 'assets/images/forest-background.png');
     this.load.audio('pop', ['assets/sounds/pop.wav']);
     this.load.audio('arcade-music', ['assets/sounds/arcade-music.wav']);
+    this.load.image('playAgain', 'assets/images/btnPlayAgain.png');
   }
   create() {
     const music = this.sound.add('arcade-music');

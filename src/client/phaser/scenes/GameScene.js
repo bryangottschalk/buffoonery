@@ -61,7 +61,6 @@ class GameScene extends Phaser.Scene {
       el.innerHTML = text;
       parent.appendChild(el);
     });
-    console.log(document);
   }
 
   preload() {
@@ -80,6 +79,13 @@ class GameScene extends Phaser.Scene {
 
   // eslint-disable-next-line max-statements
   create() {
+    this.socket.on('gameOverMessage', text => {
+      const parent = document.getElementById('events');
+      const el = document.createElement('li');
+      el.innerHTML = text;
+      parent.appendChild(el);
+    });
+
     // BACKGROUND
     this.background = this.add.image(
       this.game.config.width / 2,

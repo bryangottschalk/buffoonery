@@ -60,7 +60,6 @@ io.on('connection', socket => {
   ); // emits to one person
   socket.on('message', text => {
     // handle messages from single client
-    console.log('message:', text);
     io.emit(
       'message',
       `player ${state.playerIds.indexOf(socket.id) + 1}: ${text}`
