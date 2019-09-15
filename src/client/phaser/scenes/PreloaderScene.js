@@ -34,6 +34,7 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.image('playAgain', 'assets/images/btnPlayAgain.png');
   }
   create() {
+    // called automatically once preload has finished
     const music = this.sound.add('arcade-music');
     const musicConfig = {
       mute: false,

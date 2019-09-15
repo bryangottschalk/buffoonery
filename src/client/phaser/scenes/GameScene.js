@@ -53,7 +53,6 @@ class GameScene extends Phaser.Scene {
     this.socket.on('p2scored', () => {
       this.score2.setText(`p2 score: ${this.state.score.player2}`);
     });
-    this.chatSubmitted = this.chatSubmitted.bind(this);
     this.socket.on('message', text => {
       // listens for message from server
       const parent = document.getElementById('events');
@@ -61,6 +60,13 @@ class GameScene extends Phaser.Scene {
       el.innerHTML = text;
       parent.appendChild(el);
     });
+    this.socket.on('gameOverMessage', text => {
+      const parent = document.getElementById('events');
+      const el = document.createElement('li');
+      el.innerHTML = text;
+      parent.appendChild(el);
+    });
+    this.chatSubmitted = this.chatSubmitted.bind(this);
   }
 
   preload() {
@@ -79,13 +85,6 @@ class GameScene extends Phaser.Scene {
 
   // eslint-disable-next-line max-statements
   create() {
-    this.socket.on('gameOverMessage', text => {
-      const parent = document.getElementById('events');
-      const el = document.createElement('li');
-      el.innerHTML = text;
-      parent.appendChild(el);
-    });
-
     // BACKGROUND
     this.background = this.add.image(
       this.game.config.width / 2,
@@ -94,21 +93,6 @@ class GameScene extends Phaser.Scene {
     );
     this.background.displayWidth = 1400;
     this.background.scaleY = this.background.scaleX;
-
-    // SET PLAYERS
-    if (this.state.playerCount === 1) {
-      this.isFirstPlayer = true;
-      this.waitingForSecondPlayer = this.add.text(
-        this.game.config.width / 2,
-        this.game.config.height - 100,
-        'practice mode: scoring will start when second player joins...',
-        {
-          fontSize: '18px',
-        }
-      );
-      this.waitingForSecondPlayer.setOrigin(0.5, 0.5);
-      this.waitingForSecondPlayer.setVisible(false);
-    }
 
     this.input.keyboard.on('keydown_UP', () => this.setPlayerMoveState('up'));
     this.input.keyboard.on('keyup_UP', () => this.setPlayerMoveState(null));
@@ -146,7 +130,7 @@ class GameScene extends Phaser.Scene {
       }
     );
 
-    // SET UP PLAYERS
+    // SET PLAYERS
     if (this.state.playerCount === 1) {
       this.isFirstPlayer = true;
       this.player1 = this.physics.add.sprite(
@@ -186,7 +170,6 @@ class GameScene extends Phaser.Scene {
     this.player2.scaleY = this.player2.scaleX;
     this.player2.setImmovable();
     this.player2.body.collideWorldBounds = true;
-    this.socket.emit('playerTwoConnected', this.player2.x, this.player2.y);
 
     // CREATE OR RECEIVE BALL AND BUMPERS
     if (this.state.playerCount === 1) {
