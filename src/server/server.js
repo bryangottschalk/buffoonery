@@ -10,24 +10,12 @@ const state = {
   },
   playerOneState: {
     direction: null,
-    x: 100,
-    y: 360,
   },
   playerTwoState: {
     direction: null,
   },
   playerIds: [],
   playerCount: 0,
-  ball: {
-    x: 0,
-    y: 0,
-  },
-  bumper1: {
-    y: 0,
-  },
-  bumper2: {
-    y: 0,
-  },
 };
 
 io.on('connection', socket => {
@@ -56,7 +44,7 @@ io.on('connection', socket => {
   // handle messages from any client
   socket.emit(
     'message',
-    `Welcome! Crystal Baller fully supports trash talk so have at it.`
+    `Welcome! Buffoonery fully supports trash talk so have at it.`
   ); // emits to one person
   socket.on('message', text => {
     // handle messages from single client
@@ -66,17 +54,7 @@ io.on('connection', socket => {
     ); // send chat message to everyone that is connected, including client itself
     // if this were socket.emit it would send the message to a particular client
   });
-  if (state.playerCount > 1) {
-    io.emit('p2joined', state.playerIds[0]);
-  }
 
-  socket.on('dir', (dir, isFirstPlayer) => {
-    if (isFirstPlayer) {
-      state.playerOneState.direction = dir;
-    } else {
-      state.playerTwoState.direction = dir;
-    }
-  });
   socket.on('p1scored', () => {
     state.score.player1++;
     io.emit('p1scored');
@@ -94,24 +72,11 @@ io.on('connection', socket => {
       player2: 0,
     };
   });
-  socket.on('ballMoved', (ballX, ballY) => {
-    state.ball.x = ballX;
-    state.ball.y = ballY;
-  });
-  socket.on('bumpersMoved', (bumper1y, bumper2y) => {
-    state.bumper1.y = bumper1y;
-    state.bumper2.y = bumper2y;
-  });
-
-  socket.on('p1moved', (p1x, p1y) => {
-    state.playerOneState.x = p1x;
-    state.playerOneState.y = p1y;
-  });
 });
 
 setInterval(() => {
   io.emit('state', state);
-}, 10);
+}, 5000);
 
 server.on('error', err => {
   console.error('Server error:', err);

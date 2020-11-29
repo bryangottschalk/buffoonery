@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
-import GameScene from './scenes/GameScene';
+import HomeScene from './scenes/HomeScene';
 import BootScene from './scenes/BootScene';
 import PreloaderScene from './scenes/PreloaderScene';
 import GameOverScene from './scenes/GameOverScene';
+import MainScene from './scenes/MainScene';
 
 const config = {
   type: Phaser.AUTO,
-  width: 1080,
-  height: 720,
+  width: window.innerWidth,
+  height: window.innerHeight,
   parent: 'content',
   physics: {
     default: 'arcade',
@@ -20,10 +21,11 @@ const config = {
 class Client extends Phaser.Game {
   constructor() {
     super(config);
-    this.scene.add('Game', GameScene);
+    this.scene.add('Home', HomeScene);
     this.scene.add('Boot', BootScene);
     this.scene.add('Preloader', PreloaderScene);
     this.scene.add('GameOver', GameOverScene);
+    this.scene.add('Main', MainScene);
     this.scene.start('Boot');
 
     // 1) starts boot scene
