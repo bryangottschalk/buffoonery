@@ -26,19 +26,20 @@ class HomeScene extends Phaser.Scene {
     };
     this.socket = io('http://localhost:8080');
     this.socket.on('state', state => {
-    console.log("🚀 ~ file: HomeScene.js ~ line 29 ~ HomeScene ~ constructor ~ state", state)
       // LISTENING FOR STATE FROM SERVER
       const parent = document.getElementById('num-players');
-      console.log("🚀 ~ file: HomeScene.js ~ line 32 ~ HomeScene ~ constructor ~ parent", parent.childElementCount)
       if (parent.childElementCount > 0) {
-        
+        document.getElementById('test').innerHTML = state.playerCount
+      } else {
+        const el = document.createElement('div');
+        el.id = 'test'
+        el.innerHTML = state.playerCount;
+        parent.appendChild(el);
       }
-      const el = document.createElement('div');
-      el.innerHTML = state.playerCount;
-      parent.appendChild(el);
+      
       this.state = state;
     });
-      console.log("🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state", this.state)
+    console.log("🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state", this.state)
     this.socket.on('p2joined', () => {
       // scoring starts when p2 joins
       if (this.isFirstPlayer) {
