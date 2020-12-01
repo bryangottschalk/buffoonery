@@ -88,6 +88,7 @@ class HomeScene extends Phaser.Scene {
     this.scene.start('Main');
   }
   create() {
+    console.log('ws', this.game.ws)
     this.music = this.sound.add('startup-music');
     const musicConfig = {
       mute: false,
