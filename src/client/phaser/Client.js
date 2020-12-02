@@ -34,24 +34,27 @@ class Client extends Phaser.Game {
     const url = window.location.href;
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const roomcode = urlParams.get('roomcode') | generateRoomCode(4)
-  
-    this.ws = new WebSocket(`wss://oyvtlf0pch.execute-api.us-east-1.amazonaws.com/dev?roomcode=${roomcode}`);
+    this.roomcode = urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
+    const devUrl = 'wss://y659gztl80.execute-api.us-east-1.amazonaws.com/dev'
+    this.ws = new WebSocket(`${devUrl}?roomcode=${this.roomcode}`);
+    console.log("🚀 ~ file: Client.js ~ line 42 ~ Client ~ constructor ~ this.ws", this.ws)
+
 
     this.ws.onopen = () => {
-      const roomcode = urlParams.get('roomcode')
-      if (!roomcode) {
-        console.log('no roomcode from URL, creating gameroom id...')
-        //const msg = JSON.stringify({action: 'sendmessage', gameroomId: uuidv1(), roomcode: roomcode, data: 'new gameroom created'})
-        //this.ws.send(msg);
-      } else {
-        console.log('roomcode detected from URL... getting existing room')
-      }
+      var connectMsg = { action: "sendmessage", data: "CONNECTION OPENED" };
+      this.ws.send(JSON.stringify(connectMsg));
+    }
+    this.ws.onclose = () => {
+      var disconnectMsg = { action: "sendmessage", data: "DISCONNECT" };
+      this.ws.send(JSON.stringify(disconnectMsg));
     }
     // this.ws.onopen = event => new SocketMessage(event);
     // this.ws.onerror = event => new SocketError(event);
     // this.ws.onmessage = event => new SocketMessage(event);
-    // this.ws.onclose = event => new SocketClose(event);
+    this.ws.onclose = event => {
+      // const msg = JSON.stringify({action: 'sendmessage', roomcode: this.roomcode})
+      // this.ws.send(msg)
+    }
     
     // configure scenes
     this.scene.add('Home', HomeScene);

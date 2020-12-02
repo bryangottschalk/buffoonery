@@ -127,7 +127,7 @@ class HomeScene extends Phaser.Scene {
     this.text2 = this.add.text(
       100,
       300,
-      'Room code: 6FBC',
+      `Room code: ${this.game.roomcode}`,
       {
         fontSize: '50px',
       }
