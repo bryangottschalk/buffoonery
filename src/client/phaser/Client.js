@@ -35,7 +35,8 @@ class Client extends Phaser.Game {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     this.roomcode = urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
-    const devUrl = `wss://xejjb39csh.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`
+    const devUrl = `wss://45apz0qquj.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`
+    
     this.ws = new WebSocket(`${devUrl}`);
     console.log("🚀 ~ file: Client.js ~ line 42 ~ Client ~ constructor ~ this.ws", this.ws)
 
