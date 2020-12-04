@@ -7,7 +7,10 @@ export default class PreloaderScene extends Phaser.Scene {
   preload() {
     // load assets needed for game
     this.load.image('space-cat', 'assets/images/space-cat.jpg');
-    this.load.image('theater-background', 'assets/images/theater-background.jpg');
+    this.load.image(
+      'theater-background',
+      'assets/images/theater-background.jpg'
+    );
 
     this.load.image('forest', 'assets/images/forest-background.png');
     this.load.image('space-cat', 'assets/images/space-cat.jpg');
