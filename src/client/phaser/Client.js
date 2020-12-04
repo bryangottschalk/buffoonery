@@ -37,7 +37,7 @@ class Client extends Phaser.Game {
     const urlParams = new URLSearchParams(queryString);
     this.roomcode =
       urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
-    const devUrl = `wss://4gn89c8vy8.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`;
+    const devUrl = `wss://uqjjan1e5k.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`;
 
     this.ws = new WebSocket(`${devUrl}`);
     console.log(
@@ -46,8 +46,16 @@ class Client extends Phaser.Game {
     );
 
     this.ws.onopen = () => {
-      var connectMsg = { action: 'sendmessage', data: 'CONNECTION OPENED' };
+      var connectMsg = {
+        action: 'sendmessage',
+        data: 'CONNECTION OPENED',
+        roomcode: this.roomcode
+      };
       this.ws.send(JSON.stringify(connectMsg));
+      console.log(
+        '🚀 ~ file: Client.js ~ line 51 ~ Client ~ constructor ~ JSON.stringify(connectMsg)',
+        JSON.stringify(connectMsg)
+      );
     };
     this.ws.onclose = () => {
       var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
@@ -55,7 +63,9 @@ class Client extends Phaser.Game {
     };
     // this.ws.onopen = event => new SocketMessage(event);
     // this.ws.onerror = event => new SocketError(event);
-    // this.ws.onmessage = event => new SocketMessage(event);
+    this.ws.onmessage = (event) => {
+      console.log('message received from server:', event);
+    };
     this.ws.onclose = (event) => {
       // const msg = JSON.stringify({action: 'sendmessage', roomcode: this.roomcode})
       // this.ws.send(msg)
