@@ -13,33 +13,36 @@ class HomeScene extends Phaser.Scene {
     this.state = {
       score: {
         player1: 0,
-        player2: 0,
+        player2: 0
       },
       playerOneState: {
-        direction: null,
+        direction: null
       },
       playerTwoState: {
-        direction: null,
+        direction: null
       },
       playerIds: [],
-      playerCount: 0,
+      playerCount: 0
     };
     this.socket = io('http://localhost:8080');
-    this.socket.on('state', state => {
+    this.socket.on('state', (state) => {
       // LISTENING FOR STATE FROM SERVER
       const parent = document.getElementById('num-players');
       if (parent.childElementCount > 0) {
-        document.getElementById('test').innerHTML = state.playerCount
+        document.getElementById('test').innerHTML = state.playerCount;
       } else {
         const el = document.createElement('div');
-        el.id = 'test'
+        el.id = 'test';
         el.innerHTML = state.playerCount;
         parent.appendChild(el);
       }
-      
+
       this.state = state;
     });
-    console.log("🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state", this.state)
+    console.log(
+      '🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state',
+      this.state
+    );
     this.socket.on('p2joined', () => {
       // scoring starts when p2 joins
       if (this.isFirstPlayer) {
@@ -47,19 +50,19 @@ class HomeScene extends Phaser.Scene {
       }
     });
     this.socket.on('connection', () => {
-      console.log('connected')
-    })
+      console.log('connected');
+    });
     this.socket.on('disconnect', () => {
-      console.log('disconnection')
-    })
-    this.socket.on('message', text => {
+      console.log('disconnection');
+    });
+    this.socket.on('message', (text) => {
       // listens for message from server
       const parent = document.getElementById('events');
       const el = document.createElement('li');
       el.innerHTML = text;
       parent.appendChild(el);
     });
-    this.socket.on('gameOverMessage', text => {
+    this.socket.on('gameOverMessage', (text) => {
       const parent = document.getElementById('events');
       const el = document.createElement('li');
       el.innerHTML = text;
@@ -84,11 +87,11 @@ class HomeScene extends Phaser.Scene {
   }
 
   play() {
-    this.music.stop()
+    this.music.stop();
     this.scene.start('Main');
   }
   create() {
-    console.log('ws', this.game.ws)
+    console.log('ws', this.game.ws);
     this.music = this.sound.add('startup-music');
     const musicConfig = {
       mute: false,
@@ -97,7 +100,7 @@ class HomeScene extends Phaser.Scene {
       detune: 0,
       seek: 0,
       loop: true,
-      delay: 0,
+      delay: 0
     };
     this.music.play(musicConfig);
     // BACKGROUND
@@ -109,37 +112,18 @@ class HomeScene extends Phaser.Scene {
     this.background.displayWidth = window.innerWidth;
     this.background.scaleY = this.background.scaleX;
 
-    this.btnStart = this.add.image(
-      200,
-      600,
-      'btnStart'
-    );
+    this.btnStart = this.add.image(200, 600, 'btnStart');
     this.btnStart.setInteractive();
     this.btnStart.on('pointerdown', this.play, this);
-    this.text1 = this.add.text(
-      100,
-      200,
-      'Buffoonery',
-      {
-        fontSize: '100px',
-      }
-    );
-    this.text2 = this.add.text(
-      100,
-      300,
-      `Room code: ${this.game.roomcode}`,
-      {
-        fontSize: '50px',
-      }
-    );
-
-
-
+    this.text1 = this.add.text(100, 200, 'Buffoonery', {
+      fontSize: '100px'
+    });
+    this.text2 = this.add.text(100, 300, `Room code: ${this.game.roomcode}`, {
+      fontSize: '50px'
+    });
   }
 
-  update() {
-
-  }
+  update() {}
 }
 
 HomeScene.prototype.createBall = createBall;
