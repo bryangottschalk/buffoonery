@@ -5,6 +5,7 @@ import PreloaderScene from './scenes/PreloaderScene';
 import GameOverScene from './scenes/GameOverScene';
 import MainScene from './scenes/MainScene';
 import { v1 as uuidv1 } from 'uuid';
+import axios from 'axios';
 
 const config = {
   type: Phaser.AUTO,
@@ -35,15 +36,24 @@ class Client extends Phaser.Game {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     this.roomcode = urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
-    const devUrl = `wss://45apz0qquj.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`
+    const devUrl = `wss://uqjjan1e5k.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`
     
     this.ws = new WebSocket(`${devUrl}`);
     console.log("🚀 ~ file: Client.js ~ line 42 ~ Client ~ constructor ~ this.ws", this.ws)
 
 
-    this.ws.onopen = () => {
+    this.ws.onopen = async () => {
       var connectMsg = { action: "sendmessage", data: "CONNECTION OPENED" };
       this.ws.send(JSON.stringify(connectMsg));
+      try {
+        const res = await axios.get(`https://5fu07yrx41.execute-api.us-east-1.amazonaws.com/dev/getconnectedclients/${this.roomcode}`)
+        console.log("CONNECTED CLIENTS IN ROOM:", res)
+        if (res) {
+          console.log("ROOM COUNT:", res.length)
+        }
+      } catch (err) {
+        console.error('error connecting to websocket or getting clients:', err)
+      }
     }
     this.ws.onclose = () => {
       var disconnectMsg = { action: "sendmessage", data: "DISCONNECT" };
@@ -51,7 +61,10 @@ class Client extends Phaser.Game {
     }
     // this.ws.onopen = event => new SocketMessage(event);
     // this.ws.onerror = event => new SocketError(event);
-    // this.ws.onmessage = event => new SocketMessage(event);
+    this.ws.onmessage = event => {
+    console.log("RECEIVED MESSAGE FROM SERVER:", event)
+      
+    };
     this.ws.onclose = event => {
       // const msg = JSON.stringify({action: 'sendmessage', roomcode: this.roomcode})
       // this.ws.send(msg)
