@@ -10,65 +10,66 @@ import checkWin from '../customFunctions/checkWin';
 class HomeScene extends Phaser.Scene {
   constructor() {
     super('Home');
-    this.state = {
-      score: {
-        player1: 0,
-        player2: 0
-      },
-      playerOneState: {
-        direction: null
-      },
-      playerTwoState: {
-        direction: null
-      },
-      playerIds: [],
-      playerCount: 0
-    };
-    this.socket = io('http://localhost:8080');
-    this.socket.on('state', (state) => {
-      // LISTENING FOR STATE FROM SERVER
-      const parent = document.getElementById('num-players');
-      if (parent.childElementCount > 0) {
-        document.getElementById('test').innerHTML = state.playerCount;
-      } else {
-        const el = document.createElement('div');
-        el.id = 'test';
-        el.innerHTML = state.playerCount;
-        parent.appendChild(el);
-      }
+    // TODO: replace with aws socket events
+    // this.state = {
+    //   score: {
+    //     player1: 0,
+    //     player2: 0
+    //   },
+    //   playerOneState: {
+    //     direction: null
+    //   },
+    //   playerTwoState: {
+    //     direction: null
+    //   },
+    //   playerIds: [],
+    //   playerCount: 0
+    // };
+    // this.socket = io('http://localhost:8080');
+    // this.socket.on('state', (state) => {
+    //   // LISTENING FOR STATE FROM SERVER
+    //   const parent = document.getElementById('num-players');
+    //   if (parent.childElementCount > 0) {
+    //     document.getElementById('test').innerHTML = state.playerCount;
+    //   } else {
+    //     const el = document.createElement('div');
+    //     el.id = 'test';
+    //     el.innerHTML = state.playerCount;
+    //     parent.appendChild(el);
+    //   }
 
-      this.state = state;
-    });
-    console.log(
-      '🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state',
-      this.state
-    );
-    this.socket.on('p2joined', () => {
-      // scoring starts when p2 joins
-      if (this.isFirstPlayer) {
-        this.waitingForSecondPlayer.setVisible(false);
-      }
-    });
-    this.socket.on('connection', () => {
-      console.log('connected');
-    });
-    this.socket.on('disconnect', () => {
-      console.log('disconnection');
-    });
-    this.socket.on('message', (text) => {
-      // listens for message from server
-      const parent = document.getElementById('events');
-      const el = document.createElement('li');
-      el.innerHTML = text;
-      parent.appendChild(el);
-    });
-    this.socket.on('gameOverMessage', (text) => {
-      const parent = document.getElementById('events');
-      const el = document.createElement('li');
-      el.innerHTML = text;
-      parent.appendChild(el);
-    });
-    this.chatSubmitted = this.chatSubmitted.bind(this);
+    //   this.state = state;
+    // });
+    // console.log(
+    //   '🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state',
+    //   this.state
+    // );
+    // this.socket.on('p2joined', () => {
+    //   // scoring starts when p2 joins
+    //   if (this.isFirstPlayer) {
+    //     this.waitingForSecondPlayer.setVisible(false);
+    //   }
+    // });
+    // this.socket.on('connection', () => {
+    //   console.log('connected');
+    // });
+    // this.socket.on('disconnect', () => {
+    //   console.log('disconnection');
+    // });
+    // this.socket.on('message', (text) => {
+    //   // listens for message from server
+    //   const parent = document.getElementById('events');
+    //   const el = document.createElement('li');
+    //   el.innerHTML = text;
+    //   parent.appendChild(el);
+    // });
+    // this.socket.on('gameOverMessage', (text) => {
+    //   const parent = document.getElementById('events');
+    //   const el = document.createElement('li');
+    //   el.innerHTML = text;
+    //   parent.appendChild(el);
+    // });
+    // this.chatSubmitted = this.chatSubmitted.bind(this);
   }
 
   preload() {
@@ -83,7 +84,7 @@ class HomeScene extends Phaser.Scene {
     const input = document.querySelector('#chat');
     const text = input.value;
     input.value = '';
-    this.socket.emit('message', text); // send message to server with payload of string text
+    // TODO: this.socket.emit('message', text); // send message to server with payload of string text
   }
 
   play() {
