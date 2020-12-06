@@ -43,7 +43,13 @@ class Client extends Phaser.Game {
     this.ws = new WebSocket(`${devUrl}`);
 
     this.ws.onopen = async () => {
-      var connectMsg = { action: 'sendmessage', data: 'CONNECTION OPENED' };
+      var connectMsg = {
+        action: 'sendmessage',
+        data: {
+          msg: `CONNECTION OPENED IN ROOMCODE: ${this.roomcode}`,
+          roomcode: this.roomcode
+        }
+      };
       this.ws.send(JSON.stringify(connectMsg));
       try {
         const { data } = await axios.get(
