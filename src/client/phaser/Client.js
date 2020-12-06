@@ -38,30 +38,26 @@ class Client extends Phaser.Game {
     const urlParams = new URLSearchParams(queryString);
     this.roomcode =
       urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
-    const devUrl = `wss://uqjjan1e5k.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`;
+    const devUrl = `wss://da6wisihu2.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`;
 
     this.ws = new WebSocket(`${devUrl}`);
-    console.log(
-      '🚀 ~ file: Client.js ~ line 42 ~ Client ~ constructor ~ this.ws',
-      this.ws
-    );
-
-    this.ws = new WebSocket(`${devUrl}`);
-    console.log(
-      '🚀 ~ file: Client.js ~ line 42 ~ Client ~ constructor ~ this.ws',
-      this.ws
-    );
 
     this.ws.onopen = async () => {
-      var connectMsg = { action: 'sendmessage', data: 'CONNECTION OPENED' };
+      var connectMsg = {
+        action: 'sendmessage',
+        data: {
+          msg: `CONNECTION OPENED IN ROOMCODE: ${this.roomcode}`,
+          roomcode: this.roomcode
+        }
+      };
       this.ws.send(JSON.stringify(connectMsg));
       try {
-        const res = await axios.get(
-          `https://5fu07yrx41.execute-api.us-east-1.amazonaws.com/dev/getconnectedclients/${this.roomcode}`
+        const { data } = await axios.get(
+          `https://dev-api.buffoonery.io/getconnectedclients/${this.roomcode}`
         );
-        console.log('CONNECTED CLIENTS IN ROOM:', res);
-        if (res) {
-          console.log('ROOM COUNT:', res.length);
+        console.log('CONNECTED CLIENTS IN ROOM:', data);
+        if (data) {
+          console.log('ROOM COUNT:', data.length);
         }
       } catch (err) {
         console.error('error connecting to websocket or getting clients:', err);
