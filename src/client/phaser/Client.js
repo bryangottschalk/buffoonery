@@ -66,7 +66,7 @@ class Client extends Phaser.Game {
       // this.ws.send(JSON.stringify(connectMsg));
 
       // get initial room state
-      setTimeout(() => {
+      setTimeout(async () => {
         try {
           const { data } = await axios.get(
             `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
