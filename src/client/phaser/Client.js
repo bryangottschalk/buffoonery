@@ -88,7 +88,7 @@ class Client extends Phaser.Game {
     this.ws.onmessage = (event) => {
       const msg = JSON.parse(JSON.parse(event.data))
       console.log('RECEIVED MESSAGE FROM SERVER:', msg);
-      if (msg && msg.topic) {
+      if (msg && msg.topic && msg.connectedClients) {
         console.log('topic:', msg.topic)
         switch (msg.topic) {
 
