@@ -29,6 +29,19 @@ const generateRoomCode = (length) => {
   return result;
 };
 
+const setPlayersInLobby = (numPlayersConnected) => {
+  console.log('setting plays', numPlayersConnected)
+  const parent = document.getElementById('num-players');
+  if (parent.childElementCount > 0) {
+    document.getElementById('test').innerHTML = numPlayersConnected;
+  } else {
+    const el = document.createElement('div');
+    el.id = 'test';
+    el.innerHTML = numPlayersConnected;
+    parent.appendChild(el);
+  }
+}
+
 class Client extends Phaser.Game {
   constructor() {
     super(config);
@@ -43,34 +56,60 @@ class Client extends Phaser.Game {
     this.ws = new WebSocket(`${devUrl}`);
 
     this.ws.onopen = async () => {
-      var connectMsg = {
-        action: 'sendmessage',
-        data: {
-          msg: `CONNECTION OPENED IN ROOMCODE: ${this.roomcode}`,
-          roomcode: this.roomcode
-        }
-      };
-      this.ws.send(JSON.stringify(connectMsg));
+      // var connectMsg = {
+      //   action: 'sendmessage',
+      //   data: {
+      //     msg: `CONNECTION OPENED IN ROOMCODE: ${this.roomcode}`,
+      //     roomcode: this.roomcode
+      //   }
+      // };
+      // this.ws.send(JSON.stringify(connectMsg));
+
+      // get initial room state
       try {
         const { data } = await axios.get(
-          `https://dev-api.buffoonery.io/getconnectedclients/${this.roomcode}`
+          `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
         );
-        console.log('CONNECTED CLIENTS IN ROOM:', data);
+        console.log('INITIAL MEETING STATE', data);
+        console.log('this', this)
+        this.state = data;
         if (data) {
-          console.log('ROOM COUNT:', data.length);
+          setPlayersInLobby(this.state.connectedClients.length)
         }
       } catch (err) {
         console.error('error connecting to websocket or getting clients:', err);
       }
     };
     this.ws.onclose = () => {
-      var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
-      this.ws.send(JSON.stringify(disconnectMsg));
+      // var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
+      // this.ws.send(JSON.stringify(disconnectMsg));
     };
     // this.ws.onopen = event => new SocketMessage(event);
     // this.ws.onerror = event => new SocketError(event);
     this.ws.onmessage = (event) => {
-      console.log('RECEIVED MESSAGE FROM SERVER:', event);
+      const msg = JSON.parse(JSON.parse(event.data))
+      console.log('RECEIVED MESSAGE FROM SERVER:', msg);
+      if (msg && msg.topic) {
+        console.log('topic:', msg.topic)
+        switch (msg.topic) {
+
+          case 'Client Connected':
+            if (!this.state.connectedClients.includes(msg.connectionId)) {
+              this.state.connectedClients.push(msg.connectionId)
+              setPlayersInLobby(this.state.connectedClients.length)
+            }
+            break;
+          case 'Client Disconnected':
+            if (this.state.connectedClients.includes(msg.connectionId)) {
+              this.state.connectedClients = this.state.connectedClients.filter((c) => c !== msg.connectionId)
+              setPlayersInLobby(this.state.connectedClients.length)
+            }
+            break;
+          default:
+            throw new Error(`Unhandled topic from server: ${msg.topic}`)
+        }
+      }
+      console.log('GAME STATE', this.state)
     };
     this.ws.onclose = (event) => {
       // const msg = JSON.stringify({action: 'sendmessage', roomcode: this.roomcode})

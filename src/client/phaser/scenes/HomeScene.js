@@ -28,15 +28,15 @@ class HomeScene extends Phaser.Scene {
     // this.socket = io('http://localhost:8080');
     // this.socket.on('state', (state) => {
     //   // LISTENING FOR STATE FROM SERVER
-    //   const parent = document.getElementById('num-players');
-    //   if (parent.childElementCount > 0) {
-    //     document.getElementById('test').innerHTML = state.playerCount;
-    //   } else {
-    //     const el = document.createElement('div');
-    //     el.id = 'test';
-    //     el.innerHTML = state.playerCount;
-    //     parent.appendChild(el);
-    //   }
+    // const parent = document.getElementById('num-players');
+    // if (parent.childElementCount > 0) {
+    //   document.getElementById('test').innerHTML = state.playerCount;
+    // } else {
+    //   const el = document.createElement('div');
+    //   el.id = 'test';
+    //   el.innerHTML = state.playerCount;
+    //   parent.appendChild(el);
+    // }
 
     //   this.state = state;
     // });
@@ -124,7 +124,7 @@ class HomeScene extends Phaser.Scene {
     });
   }
 
-  update() {}
+  update() { }
 }
 
 HomeScene.prototype.createBall = createBall;
