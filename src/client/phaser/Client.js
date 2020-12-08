@@ -66,18 +66,20 @@ class Client extends Phaser.Game {
       // this.ws.send(JSON.stringify(connectMsg));
 
       // get initial room state
-      try {
-        const { data } = await axios.get(
-          `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
-        );
-        console.log('INITIAL MEETING STATE', data);
-        this.state = data;
-        if (data) {
-          setPlayersInLobby(this.state.connectedClients.length)
+      setTimeout(() => {
+        try {
+          const { data } = await axios.get(
+            `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
+          );
+          console.log('INITIAL MEETING STATE', data);
+          this.state = data;
+          if (data) {
+            setPlayersInLobby(this.state.connectedClients.length)
+          }
+        } catch (err) {
+          console.error('error getting intial meeting state:', err);
         }
-      } catch (err) {
-        console.error('error getting intial meeting state:', err);
-      }
+      }, 500)
     };
     this.ws.onclose = () => {
       // var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
