@@ -30,7 +30,7 @@ const generateRoomCode = (length) => {
 };
 
 const setPlayersInLobby = (numPlayersConnected) => {
-  console.log('setting plays', numPlayersConnected)
+  console.log('setting player count:', numPlayersConnected)
   const parent = document.getElementById('num-players');
   if (parent.childElementCount > 0) {
     document.getElementById('test').innerHTML = numPlayersConnected;
@@ -71,13 +71,12 @@ class Client extends Phaser.Game {
           `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
         );
         console.log('INITIAL MEETING STATE', data);
-        console.log('this', this)
         this.state = data;
         if (data) {
           setPlayersInLobby(this.state.connectedClients.length)
         }
       } catch (err) {
-        console.error('error connecting to websocket or getting clients:', err);
+        console.error('error getting intial meeting state:', err);
       }
     };
     this.ws.onclose = () => {
