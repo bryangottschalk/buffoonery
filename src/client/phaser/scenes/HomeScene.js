@@ -122,9 +122,17 @@ class HomeScene extends Phaser.Scene {
     this.text2 = this.add.text(100, 300, `Room code: ${this.game.roomcode}`, {
       fontSize: '50px'
     });
+    this.text3 = this.add.text(
+      100,
+      400,
+      `Go to buffoonery.io on your phone to join.`,
+      {
+        fontSize: '30px'
+      }
+    );
   }
 
-  update() { }
+  update() {}
 }
 
 HomeScene.prototype.createBall = createBall;
