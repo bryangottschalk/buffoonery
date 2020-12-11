@@ -30,7 +30,7 @@ const generateRoomCode = (length) => {
 };
 
 const setPlayersInLobby = (numPlayersConnected) => {
-  console.log('setting player count:', numPlayersConnected)
+  console.log('setting player count:', numPlayersConnected);
   const parent = document.getElementById('num-players');
   if (parent.childElementCount > 0) {
     document.getElementById('test').innerHTML = numPlayersConnected;
@@ -40,8 +40,14 @@ const setPlayersInLobby = (numPlayersConnected) => {
     el.innerHTML = numPlayersConnected;
     parent.appendChild(el);
   }
-}
+};
 
+const addMessage = (comment) => {
+  const parent = document.getElementById('events');
+  const el = document.createElement('li');
+  el.innerHTML = `${comment.name}: ${comment.chatMsg}`;
+  parent.appendChild(el);
+};
 class Client extends Phaser.Game {
   constructor() {
     super(config);
@@ -74,12 +80,12 @@ class Client extends Phaser.Game {
           console.log('INITIAL MEETING STATE', data);
           this.state = data;
           if (data) {
-            setPlayersInLobby(this.state.connectedClients.length)
+            setPlayersInLobby(this.state.connectedClients.length);
           }
         } catch (err) {
           console.error('error getting intial meeting state:', err);
         }
-      }, 500)
+      }, 500);
     };
     this.ws.onclose = () => {
       // var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
@@ -88,29 +94,34 @@ class Client extends Phaser.Game {
     // this.ws.onopen = event => new SocketMessage(event);
     // this.ws.onerror = event => new SocketError(event);
     this.ws.onmessage = (event) => {
-      const msg = JSON.parse(JSON.parse(event.data))
+      const msg = JSON.parse(event.data);
       console.log('RECEIVED MESSAGE FROM SERVER:', msg);
-      if (msg && msg.topic && msg.connectedClients) {
-        console.log('topic:', msg.topic)
+      if (msg && msg.topic) {
+        console.log('topic:', msg.topic);
         switch (msg.topic) {
-
           case 'Client Connected':
             if (!this.state.connectedClients.includes(msg.connectionId)) {
-              this.state.connectedClients.push(msg.connectionId)
-              setPlayersInLobby(this.state.connectedClients.length)
+              this.state.connectedClients.push(msg.connectionId);
+              setPlayersInLobby(this.state.connectedClients.length);
             }
             break;
           case 'Client Disconnected':
             if (this.state.connectedClients.includes(msg.connectionId)) {
-              this.state.connectedClients = this.state.connectedClients.filter((c) => c !== msg.connectionId)
-              setPlayersInLobby(this.state.connectedClients.length)
+              this.state.connectedClients = this.state.connectedClients.filter(
+                (c) => c !== msg.connectionId
+              );
+              setPlayersInLobby(this.state.connectedClients.length);
             }
             break;
+          case 'Comment Received':
+            console.log('add to chat messages...');
+            addMessage(msg.comment);
+            break;
           default:
-            throw new Error(`Unhandled topic from server: ${msg.topic}`)
+            throw new Error(`Unhandled topic from server: ${msg.topic}`);
         }
       }
-      console.log('GAME STATE', this.state)
+      console.log('GAME STATE', this.state);
     };
     this.ws.onclose = (event) => {
       // const msg = JSON.stringify({action: 'sendmessage', roomcode: this.roomcode})
