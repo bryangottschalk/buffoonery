@@ -48,6 +48,16 @@ const addMessage = (comment) => {
   el.innerHTML = `${comment.name}: ${comment.chatMsg}`;
   parent.appendChild(el);
 };
+
+const setInitialChat = (comments) => {
+  const parent = document.getElementById('events');
+  comments.forEach((c) => {
+    const el = document.createElement('li');
+    el.innerHTML = `${c.name}: ${c.chatMsg}`;
+    parent.appendChild(el);
+  });
+};
+
 class Client extends Phaser.Game {
   constructor() {
     super(config);
@@ -81,6 +91,7 @@ class Client extends Phaser.Game {
           this.state = data;
           if (data) {
             setPlayersInLobby(this.state.connectedClients.length);
+            setInitialChat(data.comments);
           }
         } catch (err) {
           console.error('error getting intial meeting state:', err);
