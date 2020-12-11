@@ -16,7 +16,7 @@ const setPlayersInLobby = (numPlayersConnected) => {
   }
 };
 
-setInterval(async () => {
+setTimeout(async () => {
   try {
     const { data } = await axios.get(
       `https://dev-api.buffoonery.io/getmeetingstate/${window.game.roomcode}`
@@ -30,4 +30,4 @@ setInterval(async () => {
   } catch (err) {
     console.error(`error setting meeting state in timeout: ${err}`);
   }
-}, 30000);
+}, 5000);
