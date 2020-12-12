@@ -1,6 +1,4 @@
-/* eslint-disable complexity */
 import Phaser from 'phaser';
-import io from 'socket.io-client';
 import createBall from '../customFunctions/createBall';
 import createBumpers from '../customFunctions/createBumpers';
 import getBall from '../customFunctions/getBall';

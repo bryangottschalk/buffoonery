@@ -69,16 +69,17 @@ class Client extends Phaser.Game {
       urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
     const devUrl = `wss://da6wisihu2.execute-api.us-east-1.amazonaws.com/dev?roomcode=${
       this.roomcode
-    }&isHost=${true}`;
+    }&isHost=${true}&name=${'Host'}`;
 
     this.ws = new WebSocket(`${devUrl}`);
-    window.history.pushState(
-      '',
-      'Buffoonery',
-      `?roomcode=${this.roomcode}&isHost=${true}`
-    );
+    window.history.pushState('', 'Buffoonery', `?roomcode=${this.roomcode}`);
 
     this.ws.onopen = async () => {
+      this.state = {
+        comments: [],
+        connectedClients: [],
+        roomcode: ''
+      };
       // var connectMsg = {
       //   action: 'sendmessage',
       //   data: {
@@ -89,21 +90,19 @@ class Client extends Phaser.Game {
       // this.ws.send(JSON.stringify(connectMsg));
 
       // get initial room state
-      setTimeout(async () => {
-        try {
-          const { data } = await axios.get(
-            `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
-          );
-          console.log('INITIAL MEETING STATE', data);
-          this.state = data;
-          if (data) {
-            setPlayersInLobby(this.state.connectedClients.length);
-            setInitialChat(data.comments);
-          }
-        } catch (err) {
-          console.error('error getting intial meeting state:', err);
+      try {
+        const { data } = await axios.get(
+          `https://dev-api.buffoonery.io/getmeetingstate/${this.roomcode}`
+        );
+        console.log('INITIAL MEETING STATE', data);
+        this.state = data;
+        if (data) {
+          setPlayersInLobby(this.state.connectedClients.length);
+          setInitialChat(data.comments);
         }
-      }, 500);
+      } catch (err) {
+        console.error('error getting intial meeting state:', err);
+      }
     };
     this.ws.onclose = () => {
       // var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
@@ -111,22 +110,40 @@ class Client extends Phaser.Game {
     };
     // this.ws.onopen = event => new SocketMessage(event);
     // this.ws.onerror = event => new SocketError(event);
-    this.ws.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
+    this.ws.onmessage = async (event) => {
+      let msg = JSON.parse(event.data);
+      if (typeof msg === 'string') {
+        msg = JSON.parse(msg);
+      }
+      const doesContainClientId = (clientIdToCheck) =>
+        this.state.connectedClients.some((clientObj) => {
+          return clientObj.connectionId === clientIdToCheck;
+        });
       console.log('RECEIVED MESSAGE FROM SERVER:', msg);
+      console.log('topic', msg.topic);
       if (msg && msg.topic) {
         console.log('topic:', msg.topic);
         switch (msg.topic) {
           case 'Client Connected':
-            if (!this.state.connectedClients.includes(msg.connectionId)) {
-              this.state.connectedClients.push(msg.connectionId);
-              setPlayersInLobby(this.state.connectedClients.length);
+            if (msg.name === 'Host') {
+              setTimeout(() => {
+                if (!doesContainClientId(msg.client.connectionId)) {
+                  this.state.connectedClients.push(msg.client);
+                  setPlayersInLobby(this.state.connectedClients.length);
+                }
+              }, 1000);
+            } else {
+              if (!doesContainClientId(msg.client.connectionId)) {
+                this.state.connectedClients.push(msg.client);
+                setPlayersInLobby(this.state.connectedClients.length);
+              }
             }
+
             break;
           case 'Client Disconnected':
-            if (this.state.connectedClients.includes(msg.connectionId)) {
+            if (doesContainClientId(msg.connectionId)) {
               this.state.connectedClients = this.state.connectedClients.filter(
-                (c) => c !== msg.connectionId
+                (c) => c.connectionId !== msg.connectionId
               );
               setPlayersInLobby(this.state.connectedClients.length);
             }
