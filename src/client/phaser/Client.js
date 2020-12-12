@@ -67,9 +67,16 @@ class Client extends Phaser.Game {
     const urlParams = new URLSearchParams(queryString);
     this.roomcode =
       urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
-    const devUrl = `wss://da6wisihu2.execute-api.us-east-1.amazonaws.com/dev?roomcode=${this.roomcode}`;
+    const devUrl = `wss://da6wisihu2.execute-api.us-east-1.amazonaws.com/dev?roomcode=${
+      this.roomcode
+    }&isHost=${true}`;
 
     this.ws = new WebSocket(`${devUrl}`);
+    window.history.pushState(
+      '',
+      'Buffoonery',
+      `?roomcode=${this.roomcode}&isHost=${true}`
+    );
 
     this.ws.onopen = async () => {
       // var connectMsg = {
