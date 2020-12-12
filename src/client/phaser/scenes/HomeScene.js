@@ -130,6 +130,22 @@ class HomeScene extends Phaser.Scene {
         fontSize: '30px'
       }
     );
+    // SET PLAYERS
+    setTimeout(() => {
+      this.player1 = this.physics.add.sprite(150, 800, 'fighter');
+      this.player1.displayWidth = 175;
+      this.player1.displayHeight = 175;
+    }, 2000);
+    setTimeout(() => {
+      this.player2 = this.physics.add.sprite(350, 800, 'archer');
+      this.player2.displayWidth = 175;
+      this.player2.displayHeight = 175;
+    }, 3000);
+    setTimeout(() => {
+      this.player3 = this.physics.add.sprite(550, 800, 'wizard');
+      this.player3.displayWidth = 175;
+      this.player3.displayHeight = 175;
+    }, 4000);
   }
 
   update() {}
