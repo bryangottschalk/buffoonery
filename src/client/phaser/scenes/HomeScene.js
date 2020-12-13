@@ -1,3 +1,4 @@
+/* eslint-disable spaced-comment */
 import Phaser from 'phaser';
 import createBall from '../customFunctions/createBall';
 import createBumpers from '../customFunctions/createBumpers';
@@ -45,69 +46,19 @@ const setInitialChat = (comments) => {
   });
 };
 
+const toggleMute = (scene) => {
+  if (!scene.game.sound.mute) {
+    scene.game.sound.mute = true;
+    scene.soundBtn.setTint('0xe0e0e0' + 50);
+  } else {
+    scene.game.sound.mute = false;
+    scene.soundBtn.setTint('0xffffff');
+  }
+};
+
 class HomeScene extends Phaser.Scene {
   constructor() {
     super('Home');
-    // TODO: replace with aws socket events
-    // this.state = {
-    //   score: {
-    //     player1: 0,
-    //     player2: 0
-    //   },
-    //   playerOneState: {
-    //     direction: null
-    //   },
-    //   playerTwoState: {
-    //     direction: null
-    //   },
-    //   playerIds: [],
-    //   playerCount: 0
-    // };
-    // this.socket = io('http://localhost:8080');
-    // this.socket.on('state', (state) => {
-    //   // LISTENING FOR STATE FROM SERVER
-    // const parent = document.getElementById('num-players');
-    // if (parent.childElementCount > 0) {
-    //   document.getElementById('test').innerHTML = state.playerCount;
-    // } else {
-    //   const el = document.createElement('div');
-    //   el.id = 'test';
-    //   el.innerHTML = state.playerCount;
-    //   parent.appendChild(el);
-    // }
-
-    //   this.state = state;
-    // });
-    // console.log(
-    //   '🚀 ~ file: HomeScene.js ~ line 44 ~ HomeScene ~ constructor ~ this.state',
-    //   this.state
-    // );
-    // this.socket.on('p2joined', () => {
-    //   // scoring starts when p2 joins
-    //   if (this.isFirstPlayer) {
-    //     this.waitingForSecondPlayer.setVisible(false);
-    //   }
-    // });
-    // this.socket.on('connection', () => {
-    //   console.log('connected');
-    // });
-    // this.socket.on('disconnect', () => {
-    //   console.log('disconnection');
-    // });
-    // this.socket.on('message', (text) => {
-    //   // listens for message from server
-    //   const parent = document.getElementById('events');
-    //   const el = document.createElement('li');
-    //   el.innerHTML = text;
-    //   parent.appendChild(el);
-    // });
-    // this.socket.on('gameOverMessage', (text) => {
-    //   const parent = document.getElementById('events');
-    //   const el = document.createElement('li');
-    //   el.innerHTML = text;
-    //   parent.appendChild(el);
-    // });
-    // this.chatSubmitted = this.chatSubmitted.bind(this);
   }
 
   preload() {
@@ -117,18 +68,11 @@ class HomeScene extends Phaser.Scene {
       .addEventListener('submit', this.chatSubmitted);
   }
 
-  chatSubmitted(e) {
-    e.preventDefault();
-    const input = document.querySelector('#chat');
-    const text = input.value;
-    input.value = '';
-    // TODO: this.socket.emit('message', text); // send message to server with payload of string text
-  }
-
   play() {
     this.music.stop();
     this.scene.start('Main');
   }
+
   create() {
     const game = window.game;
     const scene = this;
@@ -145,15 +89,6 @@ class HomeScene extends Phaser.Scene {
     window.history.pushState('', 'Buffoonery', `?roomcode=${game.roomcode}`);
 
     game.ws.onopen = async () => {
-      // var connectMsg = {
-      //   action: 'sendmessage',
-      //   data: {
-      //     msg: `CONNECTION OPENED IN ROOMCODE: ${game.roomcode}`,
-      //     roomcode: game.roomcode
-      //   }
-      // };
-      // game.ws.send(JSON.stringify(connectMsg));
-
       // get initial room state
       try {
         const { data } = await axios.get(
@@ -184,9 +119,8 @@ class HomeScene extends Phaser.Scene {
           return clientObj.connectionId === clientIdToCheck;
         });
       console.log('RECEIVED MESSAGE FROM SERVER:', msg);
-      console.log('topic', msg.topic);
+      console.log('topic:', msg.topic);
       if (msg && msg.topic) {
-        console.log('topic:', msg.topic);
         switch (msg.topic) {
           case 'Client Connected':
             if (msg.name === 'Host') {
@@ -296,11 +230,11 @@ class HomeScene extends Phaser.Scene {
         }
       }
     };
-    game.ws.onclose = (event) => {
-      // const msg = JSON.stringify({action: 'sendmessage', roomcode: game.roomcode})
-      // game.ws.send(msg)
-    };
+    game.ws.onclose = (event) => {};
 
+    /////////////////////////////
+    // ADD MUSIC, BACKGROUND, TEXT, BUTTONS
+    /////////////////////////////
     this.music = this.sound.add('startup-music');
     const musicConfig = {
       mute: false,
@@ -313,7 +247,6 @@ class HomeScene extends Phaser.Scene {
     };
     this.music.play(musicConfig);
 
-    // BACKGROUND, TEXT, START BUTTON
     this.background = this.add.image(
       this.game.config.width / 2,
       this.game.config.height / 2,
@@ -325,6 +258,20 @@ class HomeScene extends Phaser.Scene {
     this.btnStart = this.add.image(200, 600, 'btnStart');
     this.btnStart.setInteractive();
     this.btnStart.on('pointerdown', this.play, this);
+    this.soundBtn = this.add
+      .text(
+        this.btnStart.x - 100,
+        this.btnStart.y + 50,
+        'Toggle music on/off',
+        {
+          fill: 'black',
+          backgroundColor: '#00FF00',
+          padding: 10,
+          borderRadius: 10
+        }
+      )
+      .setInteractive()
+      .on('pointerdown', () => this.toggleMute(this));
     this.gameTitleText = this.add.text(100, 200, 'Buffoonery', {
       fontSize: '100px'
     });
@@ -348,7 +295,7 @@ class HomeScene extends Phaser.Scene {
 
   update() {}
 }
-
+HomeScene.prototype.toggleMute = toggleMute;
 HomeScene.prototype.createBall = createBall;
 HomeScene.prototype.createBumpers = createBumpers;
 HomeScene.prototype.getBall = getBall;
