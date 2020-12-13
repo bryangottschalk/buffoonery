@@ -165,10 +165,13 @@ class HomeScene extends Phaser.Scene {
         const { data } = await axios.get(
           `https://dev-api.buffoonery.io/getmeetingstate/${game.roomcode}`
         );
-        console.log('INITIAL MEETING STATE', data);
+        console.log('INITIAL GAME STATE', data);
         game.state = data;
         if (data) {
-          setPlayersInLobby(game.state.connectedClients.length);
+          setPlayersInLobby(
+            game.state.connectedClients.filter((client) => !client.isHost)
+              .length
+          );
           setInitialChat(data.comments);
         }
       } catch (err) {
@@ -196,13 +199,20 @@ class HomeScene extends Phaser.Scene {
               setTimeout(() => {
                 if (!doesContainClientId(msg.client.connectionId)) {
                   game.state.connectedClients.push(msg.client);
-                  setPlayersInLobby(game.state.connectedClients.length);
+                  setPlayersInLobby(
+                    game.state.connectedClients.filter(
+                      (client) => !client.isHost
+                    ).length
+                  );
                 }
               }, 1000);
             } else {
               if (!doesContainClientId(msg.client.connectionId)) {
                 game.state.connectedClients.push(msg.client);
-                setPlayersInLobby(game.state.connectedClients.length);
+                setPlayersInLobby(
+                  game.state.connectedClients.filter((client) => !client.isHost)
+                    .length
+                );
               }
               if (msg.name !== 'Host') {
                 this.game.sound.play('pop');
@@ -256,15 +266,19 @@ class HomeScene extends Phaser.Scene {
                 }
               }
             }
-
+            console.log('UPDATED GAME STATE', game.state);
             break;
           case 'Client Disconnected':
-            if (doesContainClientId(msg.connectionId)) {
+            if (doesContainClientId(msg.client.connectionId)) {
               game.state.connectedClients = game.state.connectedClients.filter(
                 (c) => c.connectionId !== msg.connectionId
               );
-              setPlayersInLobby(game.state.connectedClients.length);
+              setPlayersInLobby(
+                game.state.connectedClients.filter((client) => !client.isHost)
+                  .length
+              );
             }
+            console.log('UPDATED GAME STATE', game.state);
             break;
           case 'Comment Received':
             console.log('add to chat messages...');
@@ -274,7 +288,6 @@ class HomeScene extends Phaser.Scene {
             throw new Error(`Unhandled topic from server: ${msg.topic}`);
         }
       }
-      console.log('GAME STATE', game.state);
     };
     game.ws.onclose = (event) => {
       // const msg = JSON.stringify({action: 'sendmessage', roomcode: game.roomcode})
