@@ -30,4 +30,4 @@ setTimeout(async () => {
   } catch (err) {
     console.error(`error setting meeting state in timeout: ${err}`);
   }
-}, 5000);
+}, 4000);

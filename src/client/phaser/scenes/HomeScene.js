@@ -131,8 +131,9 @@ class HomeScene extends Phaser.Scene {
   }
   create() {
     const game = window.game;
+    const scene = this;
+    scene.players = [];
     // configure websocket
-    const url = window.location.href;
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
     game.roomcode =
@@ -174,12 +175,8 @@ class HomeScene extends Phaser.Scene {
         console.error('error getting intial meeting state:', err);
       }
     };
-    game.ws.onclose = () => {
-      // var disconnectMsg = { action: 'sendmessage', data: 'DISCONNECT' };
-      // game.ws.send(JSON.stringify(disconnectMsg));
-    };
-    // game.ws.onopen = event => new SocketMessage(event);
-    // game.ws.onerror = event => new SocketError(event);
+    game.ws.onclose = () => {};
+    game.ws.onerror = (event) => {};
     game.ws.onmessage = async (event) => {
       let msg = JSON.parse(event.data);
       if (typeof msg === 'string') {
@@ -206,6 +203,44 @@ class HomeScene extends Phaser.Scene {
               if (!doesContainClientId(msg.client.connectionId)) {
                 game.state.connectedClients.push(msg.client);
                 setPlayersInLobby(game.state.connectedClients.length);
+              }
+              if (msg.name !== 'Host') {
+                this.game.sound.play('pop');
+                const playerNumber = game.state.connectedClients.indexOf(
+                  game.state.connectedClients.find(
+                    (c) => c.connectionId === msg.client.connectionId
+                  )
+                );
+                console.log('scene', scene);
+
+                console.log('playerNumber:', playerNumber);
+                if (playerNumber > 1) {
+                  // is not player 1
+                  scene[`player${playerNumber}`] = this.physics.add.sprite(
+                    scene[`player${playerNumber - 1}`]['x'] + 200, // player info appears 200px to the right of the previous player
+                    800,
+                    'archer'
+                  );
+                  // set size and name of the current player
+                  scene[`player${playerNumber}`].displayWidth = 175;
+                  scene[`player${playerNumber}`].displayHeight = 175;
+                  scene[`player${playerNumber}`].Name = this.add.text(
+                    scene[`player${playerNumber - 1}`]['x'] + 150, // player info appears 200px to the right of the previous player
+                    900,
+                    `${msg.name}`,
+                    {
+                      fontSize: '25px'
+                    }
+                  );
+                } else {
+                  // is player 1
+                  scene.player1 = this.physics.add.sprite(150, 800, 'fighter');
+                  scene.player1.displayWidth = 175;
+                  scene.player1.displayHeight = 175;
+                  scene.player1.Name = this.add.text(100, 900, `${msg.name}`, {
+                    fontSize: '25px'
+                  });
+                }
               }
             }
 
@@ -244,7 +279,8 @@ class HomeScene extends Phaser.Scene {
       delay: 0
     };
     this.music.play(musicConfig);
-    // BACKGROUND
+
+    // BACKGROUND, TEXT, START BUTTON
     this.background = this.add.image(
       this.game.config.width / 2,
       this.game.config.height / 2,
@@ -256,13 +292,18 @@ class HomeScene extends Phaser.Scene {
     this.btnStart = this.add.image(200, 600, 'btnStart');
     this.btnStart.setInteractive();
     this.btnStart.on('pointerdown', this.play, this);
-    this.text1 = this.add.text(100, 200, 'Buffoonery', {
+    this.gameTitleText = this.add.text(100, 200, 'Buffoonery', {
       fontSize: '100px'
     });
-    this.text2 = this.add.text(100, 300, `Room code: ${game.roomcode}`, {
-      fontSize: '50px'
-    });
-    this.text3 = this.add.text(
+    this.roomcodeTitleText = this.add.text(
+      100,
+      300,
+      `Room code: ${game.roomcode}`,
+      {
+        fontSize: '50px'
+      }
+    );
+    this.instructionalTitleText = this.add.text(
       100,
       400,
       `Go to buffoonery.io on your phone to join.`,
@@ -270,22 +311,6 @@ class HomeScene extends Phaser.Scene {
         fontSize: '30px'
       }
     );
-    // SET PLAYERS
-    // setTimeout(() => {
-    //   this.player1 = this.physics.add.sprite(150, 800, 'fighter');
-    //   this.player1.displayWidth = 175;
-    //   this.player1.displayHeight = 175;
-    // }, 2000);
-    // setTimeout(() => {
-    //   this.player2 = this.physics.add.sprite(350, 800, 'archer');
-    //   this.player2.displayWidth = 175;
-    //   this.player2.displayHeight = 175;
-    // }, 3000);
-    // setTimeout(() => {
-    //   this.player3 = this.physics.add.sprite(550, 800, 'wizard');
-    //   this.player3.displayWidth = 175;
-    //   this.player3.displayHeight = 175;
-    // }, 4000);
   }
 
   update() {}
