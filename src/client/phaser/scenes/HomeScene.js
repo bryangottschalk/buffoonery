@@ -47,12 +47,13 @@ const setInitialChat = (comments) => {
 };
 
 const toggleMute = (scene) => {
-  if (!scene.game.sound.mute) {
-    scene.game.sound.mute = true;
-    scene.soundBtn.setTint('0xe0e0e0' + 50);
-  } else {
-    scene.game.sound.mute = false;
+  console.log('🚀 ~ file: HomeScene.js ~ line 50 ~ toggleMute ~ scene', scene);
+  if (!scene.music.isPlaying) {
+    scene.music.play();
     scene.soundBtn.setTint('0xffffff');
+  } else {
+    scene.music.stop();
+    scene.soundBtn.setTint('0xe0e0e0' + 50);
   }
 };
 
