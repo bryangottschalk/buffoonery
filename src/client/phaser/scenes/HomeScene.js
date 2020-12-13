@@ -132,7 +132,6 @@ class HomeScene extends Phaser.Scene {
   create() {
     const game = window.game;
     const scene = this;
-    scene.players = [];
     // configure websocket
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -146,11 +145,6 @@ class HomeScene extends Phaser.Scene {
     window.history.pushState('', 'Buffoonery', `?roomcode=${game.roomcode}`);
 
     game.ws.onopen = async () => {
-      game.state = {
-        comments: [],
-        connectedClients: [],
-        roomcode: ''
-      };
       // var connectMsg = {
       //   action: 'sendmessage',
       //   data: {
@@ -251,6 +245,10 @@ class HomeScene extends Phaser.Scene {
                       fontSize: '25px'
                     }
                   );
+                  game.state.players.push({
+                    connectionId: msg.client.connectionId,
+                    sprite: scene[`player${playerNumber}`]
+                  });
                 } else {
                   // is player 1
                   scene.player1 = this.physics.add.sprite(
@@ -262,6 +260,10 @@ class HomeScene extends Phaser.Scene {
                   scene.player1.displayHeight = 175;
                   scene.player1.Name = this.add.text(100, 900, `${msg.name}`, {
                     fontSize: '25px'
+                  });
+                  game.state.players.push({
+                    connectionId: msg.client.connectionId,
+                    sprite: scene.player1
                   });
                 }
               }
@@ -277,6 +279,11 @@ class HomeScene extends Phaser.Scene {
                 game.state.connectedClients.filter((client) => !client.isHost)
                   .length
               );
+              const playerToRemove = game.state.players.find(
+                (p) => p.connectionId === msg.connectionId
+              ).sprite;
+              playerToRemove.setVisible(false);
+              playerToRemove.Name.destroy(); // removes text below name as well
             }
             console.log('UPDATED GAME STATE', game.state);
             break;
