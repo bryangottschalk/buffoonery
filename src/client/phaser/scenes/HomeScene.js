@@ -34,7 +34,7 @@ const addMessage = (comment) => {
   const parent = document.getElementById('events');
   const el = document.createElement('li');
   el.innerHTML = `${comment.name}: ${comment.chatMsg}`;
-  parent.appendChild(el);
+  parent.prepend(el);
 };
 
 const setInitialChat = (comments) => {
@@ -102,7 +102,7 @@ class HomeScene extends Phaser.Scene {
             game.state.connectedClients.filter((client) => !client.isHost)
               .length
           );
-          setInitialChat(data.comments);
+          setInitialChat(data.comments.reverse());
         }
       } catch (err) {
         console.error('error getting intial meeting state:', err);
