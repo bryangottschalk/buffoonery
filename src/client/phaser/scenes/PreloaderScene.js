@@ -30,6 +30,14 @@ export default class PreloaderScene extends Phaser.Scene {
       frameWidth: 1000,
       frameHeight: 1000
     });
+    this.load.spritesheet(
+      'archer-attack',
+      'assets/images/archer-attack-spritesheet.png',
+      {
+        frameWidth: 2116,
+        frameHeight: 1000
+      }
+    );
   }
   create() {
     // called automatically once preload has finished

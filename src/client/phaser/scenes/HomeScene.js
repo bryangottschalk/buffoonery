@@ -119,8 +119,7 @@ class HomeScene extends Phaser.Scene {
         game.state.connectedClients.some((clientObj) => {
           return clientObj.connectionId === clientIdToCheck;
         });
-      console.log('RECEIVED MESSAGE FROM SERVER:', msg);
-      console.log('topic:', msg.topic);
+
       if (msg && msg.topic) {
         switch (msg.topic) {
           case 'Client Connected':
@@ -153,9 +152,9 @@ class HomeScene extends Phaser.Scene {
                 const getCharacter = (playerNumber) => {
                   switch (playerNumber) {
                     case 1:
-                      return 'fighter';
+                      return 'archer-attack';
                     case 2:
-                      return 'archer';
+                      return 'fighter';
                     case 3:
                       return 'wizard';
                     default:
@@ -167,7 +166,8 @@ class HomeScene extends Phaser.Scene {
                   scene[`player${playerNumber}`] = this.physics.add.sprite(
                     scene[`player${playerNumber - 1}`]['x'] + 200, // player info appears 200px to the right of the previous player
                     800,
-                    getCharacter(playerNumber)
+                    getCharacter(playerNumber),
+                    0
                   );
                   // set size and name of the current player
                   scene[`player${playerNumber}`].displayWidth = 175;
@@ -187,12 +187,23 @@ class HomeScene extends Phaser.Scene {
                 } else {
                   // is player 1
                   scene.player1 = this.physics.add.sprite(
-                    150,
+                    200,
                     800,
                     getCharacter(playerNumber)
                   );
-                  scene.player1.displayWidth = 175;
-                  scene.player1.displayHeight = 175;
+                  this.anims.create({
+                    key: 'shoot-arrow',
+                    repeat: -1,
+                    frames: this.anims.generateFrameNames('archer-attack', {
+                      start: 1,
+                      end: 5
+                    }),
+                    frameRate: 10
+                  });
+                  scene.player1.play('shoot-arrow');
+                  scene.player1.displayWidth = 350;
+                  scene.player1.scaleY = scene.player1.scaleX;
+                  scene.player1.setZ(5);
                   scene.player1.Name = this.add.text(100, 900, `${msg.name}`, {
                     fontSize: '25px'
                   });
