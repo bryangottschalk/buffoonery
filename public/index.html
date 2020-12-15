@@ -19,14 +19,21 @@
         padding: 0;
         font-family: sans-serif;
       }
+
+      .chatWrapper {
+        margin: 0px 20px;
+        width: 400px;
+      }
+      #events > li {
+        background-color: #1a003c !important;
+        margin: 8px 0px;
+        padding: 8px;
+        border-radius: 8px;
+      }
       li {
         padding-top: 5px;
         list-style: none;
-        color: green;
-      }
-      .chatWrapper {
-        margin-left: 20px;
-        width: 400px;
+        color: white;
       }
       ul {
         margin: 0;
@@ -54,7 +61,7 @@
       <div class="chatWrapper">
         <h2 id="num-players">Players in lobby:</h2>
         <form id="chat-form">
-          <h3>Chatroom:</h3>
+          <h3 style="margin-bottom: 0px">Chatroom:</h3>
           <!-- <input id="chat" />
           <button id="sendChat">Send Message</button> -->
         </form>

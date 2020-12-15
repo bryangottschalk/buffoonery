@@ -33,7 +33,7 @@ const setPlayersInLobby = (numPlayersConnected) => {
 const addMessage = (comment) => {
   const parent = document.getElementById('events');
   const el = document.createElement('li');
-  el.innerHTML = `${comment.name}: ${comment.chatMsg}`;
+  el.innerHTML = `${comment.timestamp} ${comment.name}: ${comment.chatMsg}`;
   parent.prepend(el);
 };
 
@@ -41,7 +41,7 @@ const setInitialChat = (comments) => {
   const parent = document.getElementById('events');
   comments.forEach((c) => {
     const el = document.createElement('li');
-    el.innerHTML = `${c.name}: ${c.chatMsg}`;
+    el.innerHTML = `${c.timestamp} ${c.name}: ${c.chatMsg}`;
     parent.appendChild(el);
   });
 };
