@@ -195,8 +195,8 @@ class HomeScene extends Phaser.Scene {
                     key: 'shoot-arrow',
                     repeat: -1,
                     frames: this.anims.generateFrameNames('archer-attack', {
-                      start: 1,
-                      end: 5
+                      start: 0,
+                      end: 4
                     }),
                     frameRate: 10
                   });
