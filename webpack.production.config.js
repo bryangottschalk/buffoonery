@@ -11,12 +11,14 @@ var phaser = path.join(phaserModule, 'src/phaser.js');
 var definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false'))
 });
+
+console.log('process.env', process.env);
 var envVars = new webpack.DefinePlugin({
   'process.env': {
     NODE_ENV: JSON.stringify(process.env.NODE_ENV),
     SERVER_ENV: JSON.stringify(process.env.SERVER_ENV),
-    API: 'https://dev-api.buffoonery.io',
-    API_KEY: 'WRZNoTPitV8kENEk2mHUD9oDXFYPpJbYZe8zsf30'
+    API: JSON.stringify('https://dev-api.buffoonery.io'),
+    API_KEY: JSON.stringify('WRZNoTPitV8kENEk2mHUD9oDXFYPpJbYZe8zsf30')
   }
 });
 module.exports = {
