@@ -94,7 +94,7 @@ class HomeScene extends Phaser.Scene {
       // get initial room state
       try {
         const { data } = await axios.get(
-          `https://dev-api.buffoonery.io/GetGameroomState/${game.roomcode}`
+          `${process.env.API}/GetGameroomState/${game.roomcode}`
         );
         console.log('INITIAL GAME STATE', data);
         game.state = data;
