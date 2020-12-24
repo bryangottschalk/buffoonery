@@ -17,6 +17,14 @@ const generateRoomCode = (length) => {
   return result;
 };
 
+const getConfig = () => {
+  return {
+    headers: {
+      'X-Api-Key': process.env.REACT_APP_API_KEY
+    }
+  };
+};
+
 const setPlayersInLobby = (numPlayersConnected) => {
   console.log('setting player count:', numPlayersConnected);
   const parent = document.getElementById('num-players');
@@ -91,10 +99,13 @@ class HomeScene extends Phaser.Scene {
     window.history.pushState('', 'Buffoonery', `?roomcode=${game.roomcode}`);
 
     game.ws.onopen = async () => {
+      console.log('PROCESS.ENV', process.env);
+      const config = getConfig();
       // get initial room state
       try {
         const { data } = await axios.get(
-          `${process.env.API}/GetGameroomState/${game.roomcode}`
+          `${process.env.API}/GetGameroomState/${game.roomcode}`,
+          config
         );
         console.log('INITIAL GAME STATE', data);
         game.state = data;

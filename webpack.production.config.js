@@ -5,7 +5,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var WorkboxPlugin = require('workbox-webpack-plugin');
 var dotenv = require('dotenv').config({
-  path: __dirname + '/environments/.env.prod'
+  path: path.join(__dirname, '/environments/.env.prod')
 });
 
 // Phaser webpack config
@@ -13,7 +13,10 @@ var phaserModule = path.join(__dirname, '/node_modules/phaser/');
 var phaser = path.join(phaserModule, 'src/phaser.js');
 
 var definePlugin = new webpack.DefinePlugin({
-  __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false')),
+  __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false'))
+});
+
+var definePlugin2 = new webpack.DefinePlugin({
   'process.env': dotenv.parsed
 });
 
@@ -29,6 +32,7 @@ module.exports = {
   },
   plugins: [
     definePlugin,
+    definePlugin2,
     new CleanWebpackPlugin(['build']),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.optimize.UglifyJsPlugin({
