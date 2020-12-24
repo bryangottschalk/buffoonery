@@ -20,7 +20,7 @@ const generateRoomCode = (length) => {
 const getConfig = () => {
   return {
     headers: {
-      'X-Api-Key': process.env.REACT_APP_API_KEY
+      'X-Api-Key': process.env.API_KEY
     }
   };
 };
