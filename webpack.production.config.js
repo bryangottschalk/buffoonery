@@ -5,7 +5,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
 var WorkboxPlugin = require('workbox-webpack-plugin');
 var dotenv = require('dotenv').config({
-  path: path.join(__dirname, '/environments/.env.prod')
+  path: __dirname + '/environments/.env.prod'
 });
 
 // Phaser webpack config
