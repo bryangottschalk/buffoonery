@@ -11,7 +11,14 @@ var phaser = path.join(phaserModule, 'src/phaser.js');
 var definePlugin = new webpack.DefinePlugin({
   __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'false'))
 });
-
+var envVars = new webpack.DefinePlugin({
+  'process.env': {
+    NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+    SERVER_ENV: JSON.stringify(process.env.SERVER_ENV),
+    API: 'https://dev-api.buffoonery.io',
+    API_KEY: 'WRZNoTPitV8kENEk2mHUD9oDXFYPpJbYZe8zsf30'
+  }
+});
 module.exports = {
   entry: {
     app: ['babel-polyfill', path.resolve(__dirname, 'src/main.js')],
@@ -24,6 +31,7 @@ module.exports = {
   },
   plugins: [
     definePlugin,
+    envVars,
     new CleanWebpackPlugin(['build']),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.optimize.UglifyJsPlugin({
