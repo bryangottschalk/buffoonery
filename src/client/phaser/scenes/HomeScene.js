@@ -75,6 +75,7 @@ class HomeScene extends Phaser.Scene {
   }
 
   create() {
+    console.log('PROCESS.ENV', process.env);
     const game = window.game;
     const scene = this;
     // configure websocket
@@ -93,7 +94,7 @@ class HomeScene extends Phaser.Scene {
       // get initial room state
       try {
         const { data } = await axios.get(
-          `https://dev-api.buffoonery.io/getmeetingstate/${game.roomcode}`
+          `https://dev-api.buffoonery.io/GetGameroomState/${game.roomcode}`
         );
         console.log('INITIAL GAME STATE', data);
         game.state = data;
@@ -107,6 +108,7 @@ class HomeScene extends Phaser.Scene {
       } catch (err) {
         console.error('error getting intial meeting state:', err);
       }
+      console.log('PROCESS.ENV', process.env);
     };
     game.ws.onclose = () => {};
     game.ws.onerror = (event) => {};
