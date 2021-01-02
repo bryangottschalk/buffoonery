@@ -1,16 +1,29 @@
 import Phaser from 'phaser';
+import axios from 'axios';
 
 const addVoiceConfig = (utterance, voices, name, rate, pitch) => {
   utterance.voice = voices.find((v) => v.name === name);
   utterance.rate = rate;
   utterance.pitch = pitch;
-  utterance.volume = 0.5;
+  utterance.volume = 0;
+};
+
+const getHeaders = () => {
+  return {
+    headers: {
+      'X-Api-Key': process.env.API_KEY
+    }
+  };
 };
 
 const initNarratorIntro = async () => {
   window.speechSynthesis.onvoiceschanged = function () {
     const synth = window.speechSynthesis;
     const voices = window.speechSynthesis.getVoices();
+    console.log(
+      '🚀 ~ file: MainScene.js ~ line 23 ~ initNarratorIntro ~ voices',
+      voices
+    );
     const getGreeting = () => {
       const today = new Date();
       const curHr = today.getHours();
@@ -63,12 +76,19 @@ export default class PreloaderScene extends Phaser.Scene {
     super('Main');
   }
   preload() {}
-  create() {
+  async create() {
     console.log('main scene started', this.sound);
     const game = window.game;
     setTimeout(() => {
       initNarratorIntro();
     }, 2000);
+    const headers = getHeaders();
+    const { data } = await axios.put(
+      `${process.env.API}/DistributePromptsToPlayers/${game.roomcode}`,
+      null,
+      headers
+    );
+    console.log('distribute prompts to players result:', data);
     this.music = this.sound.add('game-music');
     const musicConfig = {
       mute: false,
