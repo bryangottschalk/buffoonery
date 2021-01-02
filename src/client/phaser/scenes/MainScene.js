@@ -4,6 +4,7 @@ const addVoiceConfig = (utterance, voices, name, rate, pitch) => {
   utterance.voice = voices.find((v) => v.name === name);
   utterance.rate = rate;
   utterance.pitch = pitch;
+  utterance.volume = 0.5;
 };
 
 const initNarratorIntro = async () => {
@@ -38,6 +39,7 @@ const initNarratorIntro = async () => {
     );
     addVoiceConfig(msg4, voices, 'Daniel', 7, 1);
     synth.speak(msg1);
+    // pauses between prompts
     msg1.onend = function (e) {
       setTimeout(() => {
         synth.speak(msg2);
@@ -63,6 +65,7 @@ export default class PreloaderScene extends Phaser.Scene {
   preload() {}
   create() {
     console.log('main scene started', this.sound);
+    const game = window.game;
     setTimeout(() => {
       initNarratorIntro();
     }, 2000);
@@ -83,5 +86,15 @@ export default class PreloaderScene extends Phaser.Scene {
     );
     this.background.displayWidth = this.game.config.width - 300;
     this.background.scaleY = this.background.scaleX;
+    const screenCenterX =
+      this.cameras.main.worldView.x + this.cameras.main.width / 2 - 375;
+    this.roomcodeTitleText = this.add.text(
+      screenCenterX,
+      100,
+      `Room code: ${game.roomcode}`,
+      {
+        fontSize: '40px'
+      }
+    );
   }
 }
