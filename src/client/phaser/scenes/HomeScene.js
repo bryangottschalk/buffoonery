@@ -119,7 +119,6 @@ class HomeScene extends Phaser.Scene {
       } catch (err) {
         console.error('error getting intial meeting state:', err);
       }
-      console.log('PROCESS.ENV', process.env);
     };
     game.ws.onclose = () => {};
     game.ws.onerror = (event) => {};
