@@ -5,7 +5,7 @@ const addVoiceConfig = (utterance, voices, name, rate, pitch) => {
   utterance.voice = voices.find((v) => v.name === name);
   utterance.rate = rate;
   utterance.pitch = pitch;
-  utterance.volume = 0;
+  utterance.volume = 0.75;
 };
 
 const getHeaders = () => {
