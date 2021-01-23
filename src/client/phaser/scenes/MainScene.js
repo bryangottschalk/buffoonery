@@ -38,19 +38,19 @@ const initNarratorIntro = async () => {
     const msg1 = new SpeechSynthesisUtterance(
       `${getGreeting()} friends, welcome to Buffoonery, a game of mass chaos and destruction.`
     );
-    addVoiceConfig(msg1, voices, 'Daniel', 7, 1);
+    addVoiceConfig(msg1, voices, 'Daniel', 1, 1);
     const msg2 = new SpeechSynthesisUtterance(
       `The rules are simple. Prompts will appear on your phone in which you will fill in the blank with your silliest, wackiest quips. After all prompts are submitted, the users that did not receive your prompts will be able to vote on which response they like best.`
     );
-    addVoiceConfig(msg2, voices, 'Daniel', 7, 1);
+    addVoiceConfig(msg2, voices, 'Daniel', 1, 1);
     const msg3 = new SpeechSynthesisUtterance(
       `The more votes you get, the higher your score will be.`
     );
-    addVoiceConfig(msg3, voices, 'Daniel', 7, 1);
+    addVoiceConfig(msg3, voices, 'Daniel', 1, 1);
     const msg4 = new SpeechSynthesisUtterance(
       `Without further ado, let's get jiggy with it and start the game.`
     );
-    addVoiceConfig(msg4, voices, 'Daniel', 7, 1);
+    addVoiceConfig(msg4, voices, 'Daniel', 1, 1);
     synth.speak(msg1);
     // pauses between prompts
     msg1.onend = function (e) {
@@ -75,7 +75,7 @@ export default class PreloaderScene extends Phaser.Scene {
   constructor() {
     super('Main');
   }
-  preload() {}
+  preload() { }
   async create() {
     console.log('main scene started', this.sound);
     const game = window.game;
