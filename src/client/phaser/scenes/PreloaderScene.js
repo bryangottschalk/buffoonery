@@ -15,7 +15,7 @@ export default class PreloaderScene extends Phaser.Scene {
     this.load.audio('pop', ['assets/sounds/pop.wav']);
     this.load.image('forest', 'assets/images/forest-background.png');
     this.load.image('space-cat', 'assets/images/space-cat.jpg');
-    this.load.audio('startup-music', ['assets/sounds/startup-music.mp3']);
+    this.load.audio('lowen-lobby-music-breakbeat', ['assets/sounds/lowen-lobby-music-breakbeat.mp3']);
     this.load.audio('game-music', ['assets/sounds/game-music.mp3']);
     this.load.image('btnStart', 'assets/images/buttons/btnStart.png');
     this.load.spritesheet('fighter', 'assets/images/fighter.png', {

@@ -91,9 +91,8 @@ class HomeScene extends Phaser.Scene {
     const urlParams = new URLSearchParams(queryString);
     game.roomcode =
       urlParams.get('roomcode') || generateRoomCode(4).toUpperCase();
-    const devUrl = `wss://da6wisihu2.execute-api.us-east-1.amazonaws.com/dev?roomcode=${
-      game.roomcode
-    }&isHost=${true}&name=${'Host'}`;
+    const devUrl = `wss://da6wisihu2.execute-api.us-east-1.amazonaws.com/dev?roomcode=${game.roomcode
+      }&isHost=${true}&name=${'Host'}`;
 
     game.ws = new WebSocket(`${devUrl}`);
     window.history.pushState('', 'Buffoonery', `?roomcode=${game.roomcode}`);
@@ -120,8 +119,8 @@ class HomeScene extends Phaser.Scene {
         console.error('error getting intial meeting state:', err);
       }
     };
-    game.ws.onclose = () => {};
-    game.ws.onerror = (event) => {};
+    game.ws.onclose = () => { };
+    game.ws.onerror = (event) => { };
     game.ws.onmessage = async (event) => {
       let msg = JSON.parse(event.data);
       if (typeof msg === 'string') {
@@ -254,15 +253,15 @@ class HomeScene extends Phaser.Scene {
         }
       }
     };
-    game.ws.onclose = (event) => {};
+    game.ws.onclose = (event) => { };
 
     /////////////////////////////
     // ADD MUSIC, BACKGROUND, TEXT, BUTTONS
     /////////////////////////////
-    this.music = this.sound.add('startup-music');
+    this.music = this.sound.add('lowen-lobby-music-breakbeat');
     const musicConfig = {
       mute: false,
-      volume: 0.3,
+      volume: 0.75,
       rate: 1.05,
       detune: 0,
       seek: 0,
@@ -317,7 +316,7 @@ class HomeScene extends Phaser.Scene {
     );
   }
 
-  update() {}
+  update() { }
 }
 HomeScene.prototype.toggleMute = toggleMute;
 HomeScene.prototype.createBall = createBall;

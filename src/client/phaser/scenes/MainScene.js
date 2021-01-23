@@ -17,13 +17,10 @@ const getHeaders = () => {
 };
 
 const initNarratorIntro = async () => {
-  window.speechSynthesis.onvoiceschanged = function () {
-    const synth = window.speechSynthesis;
-    const voices = window.speechSynthesis.getVoices();
-    console.log(
-      '🚀 ~ file: MainScene.js ~ line 23 ~ initNarratorIntro ~ voices',
-      voices
-    );
+  var synth = window.speechSynthesis;
+
+  synth.addEventListener('voiceschanged', function () {
+    var voices = synth.getVoices();
     const getGreeting = () => {
       const today = new Date();
       const curHr = today.getHours();
@@ -38,19 +35,19 @@ const initNarratorIntro = async () => {
     const msg1 = new SpeechSynthesisUtterance(
       `${getGreeting()} friends, welcome to Buffoonery, a game of mass chaos and destruction.`
     );
-    addVoiceConfig(msg1, voices, 'Daniel', 1, 1);
+    addVoiceConfig(msg1, voices, 'Google UK English Male', 1, 1);
     const msg2 = new SpeechSynthesisUtterance(
       `The rules are simple. Prompts will appear on your phone in which you will fill in the blank with your silliest, wackiest quips. After all prompts are submitted, the users that did not receive your prompts will be able to vote on which response they like best.`
     );
-    addVoiceConfig(msg2, voices, 'Daniel', 1, 1);
+    addVoiceConfig(msg2, voices, 'Google UK English Male', 1, 1);
     const msg3 = new SpeechSynthesisUtterance(
       `The more votes you get, the higher your score will be.`
     );
-    addVoiceConfig(msg3, voices, 'Daniel', 1, 1);
+    addVoiceConfig(msg3, voices, 'Google UK English Male', 1, 1);
     const msg4 = new SpeechSynthesisUtterance(
       `Without further ado, let's get jiggy with it and start the game.`
     );
-    addVoiceConfig(msg4, voices, 'Daniel', 1, 1);
+    addVoiceConfig(msg4, voices, 'Google UK English Male', 1, 1);
     synth.speak(msg1);
     // pauses between prompts
     msg1.onend = function (e) {
@@ -68,7 +65,7 @@ const initNarratorIntro = async () => {
         synth.speak(msg4);
       }, 500);
     };
-  };
+  });
 };
 
 export default class PreloaderScene extends Phaser.Scene {
