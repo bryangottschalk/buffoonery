@@ -9,7 +9,7 @@ function createBall(x, y) {
   this.ball.body.setBounce(1, 1);
   this.physics.add.collider(this.player1, this.ball, () =>
     this.game.sound.play('pop')
-  );
+  ); //
   this.physics.add.collider(this.player2, this.ball, () =>
     this.game.sound.play('pop')
   );
